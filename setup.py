@@ -5,7 +5,7 @@ setup(
    version='1.0',
    description='Utility for anonymizing tabular data',
    author='DataHel',
-   author_email='foomail@foo.com',
+   author_email='',
    packages=[
     'tabular_anonymizer'
    ],
