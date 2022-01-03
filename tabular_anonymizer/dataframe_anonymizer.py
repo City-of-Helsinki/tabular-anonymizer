@@ -12,7 +12,6 @@ class DataFrameAnonymizer:
     def __init__(self, df, sensitive_attribute_columns, feature_columns=None, avg_columns=None):
         if df is None or len(df) == 0:
             raise Exception("Dataframe is empty")
-        # TODO: check index
         if feature_columns is None:
             # Assume that all other columns are feature columns
             feature_columns = []
@@ -93,7 +92,6 @@ class DataFrameAnonymizer:
                 aggregations[column] = self.__agg_numerical_column
         rows = []
         for i, partition in enumerate(partitions):
-            # ota talteen ne numeeriset arvot per joukko jotta voidaan laskea keskiarvot
             dfp = df.loc[partition]
             grouped_columns = dfp.agg(aggregations, squeeze=False)
             values = grouped_columns.to_dict()

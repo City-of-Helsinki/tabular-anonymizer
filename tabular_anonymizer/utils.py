@@ -43,7 +43,7 @@ def combine_and_pseudonymize(df1: DataFrame, df2: DataFrame, column: str, nonce1
     if not nonce1 or len(nonce1) < 10:
         nonce1 = create_nonce()
     if not nonce2 or len(nonce2) < 10:
-       nonce2 = create_nonce()
+        nonce2 = create_nonce()
     pseudonymize(df1, column, nonce1, nonce2)
     pseudonymize(df2, column, nonce1, nonce2)
     return pd.merge(df1, df2, on=column)
