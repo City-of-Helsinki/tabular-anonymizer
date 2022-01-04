@@ -118,6 +118,12 @@ The user can pseudonymize a direct identifier with a hash function.
 
 Launch new codespace and test example scripts in examples-folder directly in VSCode desktop or web interface.
 
+Tip: If you want to run jupyter-lab server in codespaces, use following command:
+
+        jupyter-lab --allow-root --ip 0.0.0.0 --config ./jupyter-server-config.py 
+
+Then add port-mapping to port 8888.
+
 #### Run examples in local docker environment
 
 You can run Jupyterlab and do experiments with tabular anonymizer in docker container:
@@ -127,6 +133,8 @@ You can run Jupyterlab and do experiments with tabular anonymizer in docker cont
 Open http://127.0.0.1:8888 in your web browser and navigate to examples/sample_notebook.ipynb
 
 Hit ctrl + c to quit container.
+
+
 
 
 ### Post-processing
