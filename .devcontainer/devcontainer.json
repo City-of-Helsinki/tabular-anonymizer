@@ -12,8 +12,7 @@
 	// Set *default* container specific settings.json values on container create.
 	"settings": {},
 
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": []
+
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [],
@@ -29,5 +28,7 @@
 
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"
+
+	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": ["ms-toolsai.jupyter"],
 }
