@@ -13,6 +13,7 @@ class MondrianAnonymizer:
     split_count = 0
     avg_columns = []  # Numeric columns that are converted to average value after partitioning (instead of interval)
     df = None    # Original dataframe
+    _DEFAULT_K = 3
 
     def __init__(self, df, feature_columns, sensitive_columns):
         self.df = df
@@ -22,7 +23,7 @@ class MondrianAnonymizer:
         self.feature_columns = feature_columns
         self.split_count = 0
 
-    def is_valid(self, partition, k=2, l=0, p=0.0):
+    def is_valid(self, partition, k=_DEFAULT_K, l=0, t=0.0):
         # k-anonymous
         if not anonymity.is_k_anonymous(partition, k):
             return False
@@ -35,11 +36,11 @@ class MondrianAnonymizer:
                 if not diverse:
                     return False
         # t-close
-        if p > 0.0 and self.sensitive_columns is not None:
+        if t > 0.0 and self.sensitive_columns is not None:
             for sensitive_column in self.sensitive_columns:
                 global_freqs = anonymity.get_global_freq(self.df, sensitive_column)
                 close = anonymity.is_t_close(
-                    self.df, partition, sensitive_column, global_freqs, p
+                    self.df, partition, sensitive_column, global_freqs, t
                 )
                 if not close:
                     return False
@@ -77,7 +78,7 @@ class MondrianAnonymizer:
             dfr = dfp.index[dfp >= median]
             return dfl, dfr
 
-    def partition(self, k=3, l=0, p=0.0):
+    def partition(self, k=_DEFAULT_K, l=0, t=0.0):
         scale = self.get_spans(self.df.index)
         finished_partitions = []
         partitions = [self.df.index]
@@ -86,7 +87,7 @@ class MondrianAnonymizer:
             spans = self.get_spans(partition, scale)
             for column, span in sorted(spans.items(), key=lambda x: -x[1]):
                 lp, rp = self.split(column, partition)
-                if not self.is_valid(lp, k, l, p) or not self.is_valid(rp, k, l, p):
+                if not self.is_valid(lp, k, l, t) or not self.is_valid(rp, k, l, t):
                     continue
                 partitions.extend((lp, rp))
                 break

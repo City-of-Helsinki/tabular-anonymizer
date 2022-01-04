@@ -27,8 +27,8 @@ class DataFrameAnonymizer:
                 if not is_numeric_dtype(df[c]):
                     raise Exception("Column " + c + " is not numeric and cannot be used as avg_column.")
 
-    def __anonymize(self, k, l=0, p=0.0):
-        partitions = self.mondrian.partition(k, l, p)
+    def __anonymize(self, k, l=0, t=0.0):
+        partitions = self.mondrian.partition(k, l, t)
         return self.build_anonymized_dataframe(partitions)
 
     def anonymize_k_anonymity(self, k):
@@ -37,8 +37,8 @@ class DataFrameAnonymizer:
     def anonymize_l_diversity(self, k, l):
         return self.__anonymize(k, l=l)
 
-    def anonymize_t_closeness(self, k, p):
-        return self.__anonymize(k, p=p)
+    def anonymize_t_closeness(self, k, t):
+        return self.__anonymize(k, t=t)
 
     def mark_column_as_zipcode(self, column_name):
         self.mondrian.df[column_name] = self.mondrian.df[column_name].astype(str).str.zfill(5)

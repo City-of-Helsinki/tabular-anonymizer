@@ -1,12 +1,7 @@
-FROM ubuntu:20.04
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.9
 
 WORKDIR /data
 ENV VIRTUAL_ENV=/data/notebook/venv
-
-# Install python & pip
-RUN echo "Install python"
-RUN apt update && apt install -y python3.8 python3-pip git
-RUN python3 -m pip install --upgrade pip
 
 # Setup project directory & venv
 RUN echo "Setup project venv"
