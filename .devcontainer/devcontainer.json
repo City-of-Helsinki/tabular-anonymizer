@@ -3,11 +3,11 @@
 {
 	"name": "Existing Dockerfile",
 
-	// Sets the run context to one level up instead of the .devcontainer folder.
+	// Sets the run context to one level up instead of the .jupyter folder.
 	"context": "..",
 
 	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
-	"dockerFile": "../Dockerfile",
+	"dockerFile": "Dockerfile",
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {},
@@ -16,7 +16,7 @@
 	"extensions": []
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [],
 
 	// Uncomment the next line to run commands after the container is created - for example installing curl.
 	// "postCreateCommand": "apt-get update && apt-get install -y curl",
@@ -29,4 +29,6 @@
 
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"
+	"extensions": [],
+	"postCreateCommand": "pip install -r codespaces"
 }
