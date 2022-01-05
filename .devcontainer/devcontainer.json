@@ -3,7 +3,7 @@
 {
 	"name": "Existing Dockerfile",
 
-	// Sets the run context to one level up instead of the .jupyter folder.
+	// Sets the run context to one level up instead of the .documents folder.
 	"context": "..",
 
 	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
@@ -28,5 +28,7 @@
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
 
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
+	"remoteUser": "vscode",
+
+	"containerEnv": { "JUPYTER_GATEWAY_URL": "https://${localEnv:CODESPACE_NAME}-8888.githubpreview.dev" }
 }

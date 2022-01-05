@@ -1,5 +1,8 @@
-# Configuration file for jupyter-notebook.
-
+# Configuration file for documents-notebook.
+import os
+print("--")
+print(os.environ['CODESPACE_NAME'])
+print("--")
 #------------------------------------------------------------------------------
 # Application(SingletonConfigurable) configuration
 #------------------------------------------------------------------------------
@@ -295,6 +298,7 @@ c.NotebookApp.allow_origin = '*'
 ## The IP address the notebook server will listen on.
 #  Default: 'localhost'
 # c.NotebookApp.ip = 'localhost'
+c.NotebookApp.ip = '0.0.0.0'
 
 ## Supply extra arguments that will be passed to Jinja environment.
 #  Default: {}
@@ -398,7 +402,7 @@ c.NotebookApp.allow_origin = '*'
 #                          module, unless it is overridden using the --browser
 #                          (NotebookApp.browser) configuration option.
 #  Default: True
-# c.NotebookApp.open_browser = True
+c.NotebookApp.open_browser = False
 
 ## Hashed password to use for web authentication.
 #  

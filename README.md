@@ -79,6 +79,12 @@ Pseudonymization tool is intended for combining data from multiple sources. Both
 is sensitive information. Combine_and_pseudonymize function 
 The user can pseudonymize a direct identifier with a hash function.
 
+![Dataframe before pseudonymization](documents/pseudonymization_before.png?raw=true "Dataframe")
+
+![Dataframe before pseudonymization](documents/pseudonymization_after.png?raw=true "Dataframe after pseudonymization of education column")
+
+![Encryption process](documents/pseudonymization_encryption.png?raw=true "Pseudonymization and ecryption process")
+
 #### Example: Pseudonymization of dataframe column with generated secret key
 
     from tabular_anonymizer import utils
@@ -114,13 +120,33 @@ The user can pseudonymize a direct identifier with a hash function.
     # combine (merge) two datasets with common index column and pseudonymize
     df_c = utils.combine_and_pseudonymize(df1, df2, 'id')
 
+#### Example: Post-processing & partial masking
+
+    # Convert intervals to partially masked ['20220', '20210'] => '202**'
+    generalize(df, 'zip', generalize_partial_masking)
+
+    # Original table
+    #                               id|    zip
+    #                               1 | '20220'
+    #                               2 | '20210'
+    # Anonymized table (K=2)
+    #                               zip
+    #                               ['20220', '20210']
+    # After partial masking
+    #                               zip
+    #                               '202**'
+
+#### More examples
+
+    More examples can be found in examples-folder.
+
 #### Run examples in GitHub Codespaces
 
 Launch new codespace and test example scripts in examples-folder directly in VSCode desktop or web interface.
 
 Tip: If you want to run jupyter-lab server in codespaces, use following command:
 
-        jupyter-lab --allow-root --ip 0.0.0.0 --config ./jupyter-server-config.py 
+        jupyter-lab --ip 0.0.0.0 --config .devcontainer/jupyter-server-config.py --no-browser
 
 Then add port-mapping to port 8888.
 
@@ -134,34 +160,6 @@ Open http://127.0.0.1:8888 in your web browser and navigate to examples/sample_n
 
 Hit ctrl + c to quit container.
 
-
-
-
-### Post-processing
-
-#### Partial masking
-
-    # Convert intervals to partially masked ['20220', '20210'] => '202**'
-    generalize(df, 'zip', generalize_partial_masking)
-
-
-    # Original table
-    #                               id|    zip
-    #                               1 | '20220'
-    #                               2 | '20210'
-    # Anonymized table (K=2)
-    #                               zip
-    #                               ['20220', '20210']
-    # After partial masking
-    #                               zip
-    #                               '202**'
-
-
-
-
-## More examples
-
-    More examples can be found in examples-folder.
 
 ## Acknowledgements
 
