@@ -1,8 +1,5 @@
 # Configuration file for documents-notebook.
-import os
-print("--")
-print(os.environ['CODESPACE_NAME'])
-print("--")
+
 #------------------------------------------------------------------------------
 # Application(SingletonConfigurable) configuration
 #------------------------------------------------------------------------------
@@ -83,7 +80,7 @@ print("--")
 #  
 #          Takes precedence over allow_origin_pat.
 #  Default: ''
-c.NotebookApp.allow_origin = '*'
+c.ServerApp.allow_origin = '*'
 
 ## Use a regular expression for the Access-Control-Allow-Origin header
 #  
@@ -157,7 +154,7 @@ c.NotebookApp.allow_origin = '*'
 #                        standard library module, which allows setting of the
 #                        BROWSER environment variable to override it.
 #  Default: ''
-# c.NotebookApp.browser = ''
+# c.ServerApp.browser = ''
 
 ## The full path to an SSL/TLS certificate file.
 #  Default: ''
@@ -298,7 +295,7 @@ c.NotebookApp.allow_origin = '*'
 ## The IP address the notebook server will listen on.
 #  Default: 'localhost'
 # c.NotebookApp.ip = 'localhost'
-c.NotebookApp.ip = '0.0.0.0'
+c.ServerApp.ip = '0.0.0.0'
 
 ## Supply extra arguments that will be passed to Jinja environment.
 #  Default: {}

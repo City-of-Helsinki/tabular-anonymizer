@@ -30,5 +30,4 @@
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode",
 
-	"containerEnv": { "JUPYTER_GATEWAY_URL": "https://${localEnv:CODESPACE_NAME}-8888.githubpreview.dev" }
 }
