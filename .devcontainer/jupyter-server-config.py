@@ -1,8 +1,5 @@
 # Configuration file for documents-notebook.
-import os
-print("--")
-print(os.environ['CODESPACE_NAME'])
-print("--")
+
 #------------------------------------------------------------------------------
 # Application(SingletonConfigurable) configuration
 #------------------------------------------------------------------------------
