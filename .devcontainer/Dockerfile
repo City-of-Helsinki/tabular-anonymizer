@@ -1,10 +1,10 @@
 FROM ubuntu:20.04
 
-RUN apt update && apt install -y python3.9 python3-pip git
-
 WORKDIR /data
 ENV DEBIAN_FRONTEND=noninteractive
 ENV VIRTUAL_ENV=/data/notebook/venv
+
+RUN apt update && apt install -y python3.9 python3-pip git
 
 # Setup project directory & venv
 RUN echo "Setup project venv"
