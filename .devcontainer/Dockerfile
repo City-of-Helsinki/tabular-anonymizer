@@ -1,25 +1,10 @@
 FROM ubuntu:20.04
 
-WORKDIR /data
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
 
-ENV VIRTUAL_ENV=/data/notebook/venv
-
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -y python3.9 python3-pip git
-
-# Setup project directory & venv
-RUN echo "Setup project venv"
-RUN mkdir -p /data/notebook
-
-# Install project dependencies
-RUN echo "Install jupyterlab"
-RUN pip3 install jupyterlab
-
-
-COPY ./tabular_anonymizer/ /data/tabular_anonymizer/tabular_anonymizer/
-COPY ./setup.py /data/tabular_anonymizer/
-COPY examples/sample_notebook.ipynb /data/notebook/
-COPY examples/adult.csv /data/notebook/
-
-
-RUN pip3 install jupyterlab
-RUN pip3 install -e /data/tabular_anonymizer/
+RUN apt-get update --fix-missing && \ 
+apt-get -y upgrade && \
+apt-get install -y --no-install-recommends build-essential software-properties-common python-is-python3 python3-pip python3-dev && \
+apt-get clean && \
+rm -rf /var/lib/apt/lists/*
