@@ -1,4 +1,6 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.9
+FROM ubuntu:20.04
+
+RUN apt update && apt install -y python3.9 python3-pip git
 
 WORKDIR /data
 ENV VIRTUAL_ENV=/data/notebook/venv
