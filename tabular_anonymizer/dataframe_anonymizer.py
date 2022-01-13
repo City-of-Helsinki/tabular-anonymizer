@@ -77,6 +77,10 @@ class DataFrameAnonymizer:
             string = f"{minimum}-{maximum}"
         return [string]
 
+    def partition_dataframe(self, k, l=0, t=0.0):
+        partitions = self.mondrian.partition(k, l, t)
+        return partitions
+
     def build_anonymized_dataframe(self, partitions) -> DataFrame:
         aggregations = {}
         sensitive_columns = self.mondrian.sensitive_columns

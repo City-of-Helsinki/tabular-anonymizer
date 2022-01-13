@@ -26,6 +26,22 @@ You can also clone this repository and install library from local folder with pi
 DataFrameAnonymizer anonymization functionality supports K-anonymity alone or together with L-diversity or T-closeness 
 using Mondrian algorithm. Utils and methods are for [Pandas DataFrames](https://pandas.pydata.org). 
 
+#### K-Anonymity in practice
+
+In this simplified example there is dataset of 20 persons about their age, salary and education. 
+We will anonymize this using mondrian algorithm with K=5.
+
+![Dataframe before anonymization](documents/mondrian_data.png?raw=true "Dataframe")
+
+After mondrian partitioning process (with K=5), data is divided to groups of at least 5 using age and salary as quasi identifiers.
+
+![Values after mondrian partitioning](documents/mondrian_plot.png?raw=true "Partitioned data")
+
+In anonymization process a new dataframe is constructed and groups are divided to separate rows by sensitive attribute. 
+
+![Anonymized dataset](documents/mondrian_anonymized.png?raw=true "Anonymized data with K=5")
+
+
 #### Example: K-Anonymity using DataFrameAnonymizer
 
     import pandas as pd
@@ -164,3 +180,5 @@ Hit ctrl + c to quit container.
 ## Acknowledgements
 
 This library uses parts of [AnonyPy](https://github.com/glassonion1/anonypy) mondrian implementation with enhancements. 
+
+Visualization example (plot_partitions.py) is based on K-Anonymity plots. [AnonyPy](https://github.com/Nuclearstar/K-Anonymity)
