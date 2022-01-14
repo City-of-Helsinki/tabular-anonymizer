@@ -37,10 +37,11 @@ After mondrian partitioning process (with K=5), data is divided to groups of at 
 
 ![Values after mondrian partitioning](documents/mondrian_plot.png?raw=true "Partitioned data")
 
-In anonymization process a new dataframe is constructed and groups are divided to separate rows by sensitive attribute. 
+In anonymization process a new dataframe is constructed and groups are divided to separate rows by sensitive attribute (education). 
 
 ![Anonymized dataset](documents/mondrian_anonymized.png?raw=true "Anonymized data with K=5")
 
+You can test this in practice with: examples/plot_partitions.py 
 
 #### Example: K-Anonymity using DataFrameAnonymizer
 
@@ -100,6 +101,8 @@ The user can pseudonymize a direct identifier with a hash function.
 ![Dataframe before pseudonymization](documents/pseudonymization_after.png?raw=true "Dataframe after pseudonymization of education column")
 
 ![Encryption process](documents/pseudonymization_encryption.png?raw=true "Pseudonymization and ecryption process")
+
+
 
 #### Example: Pseudonymization of dataframe column with generated secret key
 
