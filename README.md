@@ -28,12 +28,12 @@ using Mondrian algorithm. Utils and methods are for [Pandas DataFrames](https://
 
 #### K-Anonymity in practice
 
-In this simplified example there is dataset of 20 persons about their age, salary and education. 
+In this simplified example there is mock dataset of 20 persons about their age, salary and education. 
 We will anonymize this using mondrian algorithm with K=5.
 
 ![Dataframe before anonymization](documents/mondrian_data.png?raw=true "Dataframe")
 
-After mondrian partitioning process (with K=5), data is divided to groups of at least 5 using age and salary as quasi identifiers.
+After mondrian partitioning process (with K=5), data is divided to groups of at least 5 using age and salary as dimensions.
 
 ![Values after mondrian partitioning](documents/mondrian_plot.png?raw=true "Partitioned data")
 
