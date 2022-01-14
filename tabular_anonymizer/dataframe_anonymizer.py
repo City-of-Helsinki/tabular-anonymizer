@@ -65,7 +65,9 @@ class DataFrameAnonymizer:
         # this is workaround for dtype bug of series
         series.astype("category")
         l = [str(n) for n in set(series)]
-        return [",".join(l)]
+        # return [",".join(l)]
+        # return list instead of string
+        return l
 
     @staticmethod
     def __agg_numerical_column(series):
