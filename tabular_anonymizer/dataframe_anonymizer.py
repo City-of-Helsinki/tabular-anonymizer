@@ -22,10 +22,14 @@ class DataFrameAnonymizer:
         self.mondrian = MondrianAnonymizer(df, feature_columns, sensitive_attribute_columns)
 
         self.avg_columns = avg_columns
+        self.interval_columns = []
         if avg_columns:
             for c in avg_columns:
                 if not is_numeric_dtype(df[c]):
                     raise Exception("Column " + c + " is not numeric and cannot be used as avg_column.")
+        for c in feature_columns:
+            if is_numeric_dtype(df[c]) and not c in avg_columns:
+                self.interval_columns.append(c)
 
     def __anonymize(self, k, l=0, t=0.0):
         partitions = self.mondrian.partition(k, l, t)
@@ -74,10 +78,8 @@ class DataFrameAnonymizer:
         minimum = series.min()
         maximum = series.max()
         if maximum == minimum:
-            string = str(maximum)
-        else:
-            string = f"{minimum}-{maximum}"
-        return [string]
+            return [maximum]
+        return [minimum, maximum]
 
     def partition_dataframe(self, k, l=0, t=0.0):
         partitions = self.mondrian.partition(k, l, t)
@@ -88,7 +90,6 @@ class DataFrameAnonymizer:
         sensitive_columns = self.mondrian.sensitive_columns
         feature_columns = self.mondrian.feature_columns
         df = self.mondrian.df
-        avg_columns = self.avg_columns
 
         sa_len = len(sensitive_columns)
         for column in feature_columns:
@@ -101,15 +102,26 @@ class DataFrameAnonymizer:
             dfp = df.loc[partition]
             grouped_columns = dfp.agg(aggregations, squeeze=False)
             values = grouped_columns.to_dict()
-            if avg_columns:
+            if self.avg_columns:
                 # handle average columns and set average instead of interval
                 # overwrite column with average
-                for avg_col in avg_columns:
+                for avg_col in self.avg_columns:
                     col_name = avg_col + '_avg' if not self.AVG_OVERWRITE else avg_col
                     if avg_col in feature_columns:
                         avg_val = dfp[avg_col].mean()
                         values.update({col_name: avg_val})
-
+            if self.interval_columns:
+                # set interval high and low values to separate columns
+                for interval_col in self.interval_columns:
+                    col_name_lo = interval_col + '_lo'
+                    col_name_hi = interval_col + '_hi'
+                    value = values[interval_col]
+                    value_low = value[0]
+                    if len(value) > 1:
+                        value_high = value[1]
+                    else:
+                        value_high = value_low
+                    values.update({col_name_lo: value_low, col_name_hi: value_high})
             grouped_sensitive_columns = dfp.groupby(sensitive_columns, as_index=False)
             for grouped_sensitive_value in grouped_sensitive_columns:
                 for sensitive_column in sensitive_columns:
