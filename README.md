@@ -182,6 +182,6 @@ Hit ctrl + c to quit container.
 
 ## Acknowledgements
 
-This library uses parts of [AnonyPy](https://github.com/glassonion1/anonypy) mondrian implementation with enhancements. 
+This library uses parts of [glassonion1/AnonyPy](https://github.com/glassonion1/anonypy) mondrian implementation with enhancements. 
 
-Visualization example (plot_partitions.py) is based on K-Anonymity plots. [AnonyPy](https://github.com/Nuclearstar/K-Anonymity)
+Visualization example (plot_partitions.py) is based on Nuclearstar/K-Anonymity plot implementation. [Nuclearstar/K-Anonymity](https://github.com/Nuclearstar/K-Anonymity)
