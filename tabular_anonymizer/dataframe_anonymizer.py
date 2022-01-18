@@ -9,7 +9,8 @@ class DataFrameAnonymizer:
     AVG_OVERWRITE = True
     mondrian: MondrianAnonymizer    # takes care of partitioning dataframe using mondrian algorithm
 
-    def __init__(self, df, sensitive_attribute_columns, feature_columns=None, avg_columns=None):
+    def __init__(self, df, sensitive_attribute_columns, feature_columns=None, avg_columns=None,
+                 format_to_str=False):
         if df is None or len(df) == 0:
             raise Exception("Dataframe is empty")
         if feature_columns is None:
@@ -20,7 +21,7 @@ class DataFrameAnonymizer:
                     feature_columns.append(col)
         self.set_non_numerical_as_categorical(df)
         self.mondrian = MondrianAnonymizer(df, feature_columns, sensitive_attribute_columns)
-
+        self.format_to_str = format_to_str
         self.avg_columns = avg_columns
         self.interval_columns = []
         if avg_columns:
@@ -63,22 +64,22 @@ class DataFrameAnonymizer:
             if not is_numeric_dtype(df[col]):
                 df[col] = df[col].astype("category")
 
-
-    @staticmethod
-    def __agg_categorical_column(series):
+    def __agg_categorical_column(self, series, format_to_str=False):
         # this is workaround for dtype bug of series
         series.astype("category")
         l = [str(n) for n in set(series)]
-        # return [",".join(l)]
+        if self.format_to_str:
+            return ", ".join(l)
         # return list instead of string
         return l
 
-    @staticmethod
-    def __agg_numerical_column(series):
+    def __agg_numerical_column(self, series):
         minimum = series.min()
         maximum = series.max()
         if maximum == minimum:
             return [maximum]
+        if self.format_to_str:
+            return "{min}-{max}".format(min=minimum, max=maximum)
         return [minimum, maximum]
 
     def partition_dataframe(self, k, l=0, t=0.0):

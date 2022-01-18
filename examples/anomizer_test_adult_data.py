@@ -27,7 +27,7 @@ def main():
 
     # Init DataFrameAnonymizer
     print("Run tabular_anonymizer. Sensitive columns: ", sensitive_columns, ", k=", k)
-    p = DataFrameAnonymizer(df, sensitive_columns, avg_columns=avg_columns)
+    p = DataFrameAnonymizer(df, sensitive_columns, avg_columns=avg_columns, format_to_str=True)
 
     # New anonymized dataframe is formed
     df_anonymized = p.anonymize_k_anonymity(k=k)
