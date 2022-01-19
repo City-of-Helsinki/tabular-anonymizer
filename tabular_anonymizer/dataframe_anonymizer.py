@@ -64,23 +64,27 @@ class DataFrameAnonymizer:
             if not is_numeric_dtype(df[col]):
                 df[col] = df[col].astype("category")
 
-    def __agg_categorical_column(self, series, format_to_str=False):
-        # this is workaround for dtype bug of series
-        series.astype("category")
-        l = [str(n) for n in set(series)]
-        if self.format_to_str:
+    @staticmethod
+    def __agg_column_str(series):
+        if is_numeric_dtype(series):
+            minimum = series.min()
+            maximum = series.max()
+            return "{min} - {max}".format(min=minimum, max=maximum)
+        else:
+            series.astype("category")
+            l = [str(n) for n in set(series)]
             return ", ".join(l)
-        # return list instead of string
-        return l
 
-    def __agg_numerical_column(self, series):
-        minimum = series.min()
-        maximum = series.max()
-        if maximum == minimum:
-            return [maximum]
-        if self.format_to_str:
-            return "{min}-{max}".format(min=minimum, max=maximum)
-        return [minimum, maximum]
+    @staticmethod
+    def __agg_column_list(series):
+        if is_numeric_dtype(series):
+            minimum = series.min()
+            maximum = series.max()
+            return [minimum, maximum]
+        else:
+            series.astype("category")
+            l = [str(n) for n in set(series)]
+            return l
 
     def partition_dataframe(self, k, l=0, t=0.0):
         partitions = self.mondrian.partition(k, l, t)
@@ -94,10 +98,11 @@ class DataFrameAnonymizer:
 
         sa_len = len(sensitive_columns)
         for column in feature_columns:
-            if df[column].dtype.name == "category":
-                aggregations[column] = self.__agg_categorical_column
+            if self.format_to_str:
+                aggregations[column] = self.__agg_column_str
             else:
-                aggregations[column] = self.__agg_numerical_column
+                aggregations[column] = self.__agg_column_list
+
         rows = []
         for i, partition in enumerate(partitions):
             dfp = df.loc[partition]
@@ -116,7 +121,10 @@ class DataFrameAnonymizer:
                 for interval_col in self.interval_columns:
                     col_name_lo = interval_col + '_lo'
                     col_name_hi = interval_col + '_hi'
-                    value = values[interval_col]
+                    if self.format_to_str:
+                        value = values[interval_col].split(" - ")
+                    else:
+                        value = values[interval_col]
                     value_low = value[0]
                     if len(value) > 1:
                         value_high = value[1]
