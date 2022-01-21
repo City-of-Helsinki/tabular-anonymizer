@@ -12,10 +12,11 @@ class DataFrameAnonymizer:
     AVG_OVERWRITE = True
     mondrian: MondrianAnonymizer    # takes care of partitioning dataframe using mondrian algorithm
 
-    def __init__(self, sensitive_attribute_columns: List[str], feature_columns=None, avg_columns=None):
+    def __init__(self, sensitive_attribute_columns: List[str], feature_columns=None, avg_columns=None, format_to_str=False):
         self.sensitive_attribute_columns = sensitive_attribute_columns
         self.feature_columns = feature_columns
         self.avg_columns = avg_columns
+        self.format_to_str = format_to_str
 
     def anonymize(self, df, k, l=0, t=0.0):
 
@@ -54,23 +55,26 @@ class DataFrameAnonymizer:
         return self.anonymize(df, k, t=t)
 
     @staticmethod
-    def __agg_categorical_column(series):
-        # this is workaround for dtype bug of series
-        series.astype("category")
-        l = [str(n) for n in set(series)]
-        # return [",".join(l)]
-        # return list instead of string
-        return l
+    def __agg_column_str(series):
+        if is_numeric_dtype(series):
+            minimum = series.min()
+            maximum = series.max()
+            return "{min} - {max}".format(min=minimum, max=maximum)
+        else:
+            series.astype("category")
+            l = [str(n) for n in set(series)]
+            return ", ".join(l)
 
     @staticmethod
-    def __agg_numerical_column(series):
-        minimum = series.min()
-        maximum = series.max()
-        if maximum == minimum:
-            string = str(maximum)
+    def __agg_column_list(series):
+        if is_numeric_dtype(series):
+            minimum = series.min()
+            maximum = series.max()
+            return [minimum, maximum]
         else:
-            string = f"{minimum}-{maximum}"
-        return [string]
+            series.astype("category")
+            l = [str(n) for n in set(series)]
+            return l
 
     def partition_dataframe(self, df, k, l=0, t=0.0) -> List[NumericIndex]:
         mondrian = MondrianAnonymizer(df, self.feature_columns, self.sensitive_attribute_columns)
@@ -81,23 +85,24 @@ class DataFrameAnonymizer:
         aggregations = {}
         sensitive_columns = self.sensitive_attribute_columns
         feature_columns = self.feature_columns
-        avg_columns = self.avg_columns
+
 
         sa_len = len(sensitive_columns)
         for column in feature_columns:
-            if df[column].dtype.name == "category":
-                aggregations[column] = self.__agg_categorical_column
+            if self.format_to_str:
+                aggregations[column] = self.__agg_column_str
             else:
-                aggregations[column] = self.__agg_numerical_column
+                aggregations[column] = self.__agg_column_list
+
         rows = []
         for i, partition in enumerate(partitions):
             dfp = df.loc[partition]
             grouped_columns = dfp.agg(aggregations, squeeze=False)
             values = grouped_columns.to_dict()
-            if avg_columns:
+            if self.avg_columns:
                 # handle average columns and set average instead of interval
                 # overwrite column with average
-                for avg_col in avg_columns:
+                for avg_col in self.avg_columns:
                     col_name = avg_col + '_avg' if not self.AVG_OVERWRITE else avg_col
                     if avg_col in feature_columns:
                         avg_val = dfp[avg_col].mean()
