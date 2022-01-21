@@ -24,14 +24,14 @@ def main():
     k = 5
 
     # Init DataFrameAnonymizer with dataframe and sensitive column
-    p = DataFrameAnonymizer(df, sensitive_columns)
+    p = DataFrameAnonymizer(sensitive_columns)
 
     # Perform partiotioning and anonymization separately
     print("\nPartition dataframe with mondrian algorithm. Sensitive columns: ", sensitive_columns, ", k=", k)
-    partitions = p.partition_dataframe(k=k)
+    partitions = p.partition_dataframe(df, k=k)
 
     # Data in anonymized form
-    df_anonymized = p.build_anonymized_dataframe(partitions)
+    df_anonymized = p.build_anonymized_dataframe(df, partitions)
 
     # Plot partition
     # Use age and salary as dimensions since education is sensitive column

@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from tabular_anonymizer import DataFrameAnonymizer, utils
 
+
 def main():
 
     # Prepare dataframe from example csv file
@@ -27,10 +28,10 @@ def main():
 
     # Init DataFrameAnonymizer
     print("Run tabular_anonymizer. Sensitive columns: ", sensitive_columns, ", k=", k)
-    p = DataFrameAnonymizer(df, sensitive_columns, avg_columns=avg_columns)
+    p = DataFrameAnonymizer(sensitive_columns, avg_columns=avg_columns)
 
     # New anonymized dataframe is formed
-    df_anonymized = p.anonymize_k_anonymity(k=k)
+    df_anonymized = p.anonymize_k_anonymity(df, k=k)
 
     print("\nSample of anonymized data:\n")
     print(df_anonymized.head())

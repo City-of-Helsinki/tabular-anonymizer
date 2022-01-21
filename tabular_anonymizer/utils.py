@@ -1,6 +1,7 @@
 import hashlib
 import string
 import random
+from typing import List
 
 import pandas as pd
 from pandas import DataFrame
@@ -49,9 +50,27 @@ def combine_and_pseudonymize(df1: DataFrame, df2: DataFrame, column: str, nonce1
     return pd.merge(df1, df2, on=column)
 
 
+def format_column_as_zipcode(df, column_name):
+    df[column_name] = df[column_name].astype(str).str.zfill(5)
+    df[column_name] = df[column_name].astype("category")
+
+
+# Helper method, convert datetime to year
+def convert_datetime_to_year(df, column_name):
+    df[column_name] = pd.to_datetime(df[column_name])
+    df[column_name] = pd.DatetimeIndex(df[column_name]).year
+    df[column_name] = df[column_name].astype("number")
+
+
 # Post-generalization helper
 def generalize(df: DataFrame, column_name: str, method: staticmethod):
     df[column_name] = df[column_name].apply(lambda x: method(x))
+
+
+# Handling for zip codes and other numeric categorical columns
+def mark_as_categorical(df, categorical_columns: List[str]):
+    for name in categorical_columns:
+        df[name] = df[name].astype("category")
 
 
 # Converts intervals to partially masked, eg ['20220', '20210'] => '202**'

@@ -1,6 +1,9 @@
+from typing import List
+
 import pandas as pd
 from pandas import DataFrame
-from pandas.api.types import is_numeric_dtype
+from pandas.core.dtypes.common import is_numeric_dtype
+from pandas.core.indexes.numeric import NumericIndex
 
 from .mondrian_anonymizer import MondrianAnonymizer
 
@@ -9,56 +12,46 @@ class DataFrameAnonymizer:
     AVG_OVERWRITE = True
     mondrian: MondrianAnonymizer    # takes care of partitioning dataframe using mondrian algorithm
 
-    def __init__(self, df, sensitive_attribute_columns, feature_columns=None, avg_columns=None):
+    def __init__(self, sensitive_attribute_columns: List[str], feature_columns=None, avg_columns=None):
+        self.sensitive_attribute_columns = sensitive_attribute_columns
+        self.feature_columns = feature_columns
+        self.avg_columns = avg_columns
+
+    def anonymize(self, df, k, l=0, t=0.0):
+
+        # Check inputs
         if df is None or len(df) == 0:
             raise Exception("Dataframe is empty")
-        if feature_columns is None:
-            # Assume that all other columns are feature columns
-            feature_columns = []
-            for col in df.columns:
-                if col not in sensitive_attribute_columns:
-                    feature_columns.append(col)
-        self.set_non_numerical_as_categorical(df)
-        self.mondrian = MondrianAnonymizer(df, feature_columns, sensitive_attribute_columns)
+        if self.sensitive_attribute_columns is None or len(self.sensitive_attribute_columns) == 0:
+            raise Exception("Provide at least one sensitive attribute column")
 
-        self.avg_columns = avg_columns
-        if avg_columns:
-            for c in avg_columns:
+        if self.avg_columns:
+            for c in self.avg_columns:
                 if not is_numeric_dtype(df[c]):
-                    raise Exception("Column " + c + " is not numeric and cannot be used as avg_column.")
+                    raise Exception("Column " + c + " is not numeric and average cannot be calculated.")
 
-    def __anonymize(self, k, l=0, t=0.0):
-        partitions = self.mondrian.partition(k, l, t)
-        return self.build_anonymized_dataframe(partitions)
+        # Setup feature columns / Quasi identifiers
+        fc = []
+        if self.feature_columns is None:
+            # Assume that all other columns are feature columns
+            for col in df.columns:
+                if col not in self.sensitive_attribute_columns:
+                    fc.append(col)
+            self.feature_columns = fc
 
-    def anonymize_k_anonymity(self, k):
-        return self.__anonymize(k)
+        mondrian = MondrianAnonymizer(df, self.feature_columns, self.sensitive_attribute_columns)
+        partitions = mondrian.partition(k, l, t)
+        dfa = self.build_anonymized_dataframe(df, partitions)
+        return dfa
 
-    def anonymize_l_diversity(self, k, l):
-        return self.__anonymize(k, l=l)
+    def anonymize_k_anonymity(self, df, k) -> DataFrame:
+        return self.anonymize(df, k)
 
-    def anonymize_t_closeness(self, k, t):
-        return self.__anonymize(k, t=t)
+    def anonymize_l_diversity(self, df, k, l) -> DataFrame:
+        return self.anonymize(df, k, l=l)
 
-    def mark_column_as_zipcode(self, column_name):
-        self.mondrian.df[column_name] = self.mondrian.df[column_name].astype(str).str.zfill(5)
-        self.mondrian.df[column_name] = self.mondrian.df[column_name].astype("category")
-
-    def mark_datetime_to_year(self, column_name):
-        self.mondrian.df[column_name] = pd.to_datetime( self.mondrian.df[column_name])
-        self.mondrian.df[column_name] = pd.DatetimeIndex(self.mondrian.df[column_name]).year
-
-    # Handling for zip codes and other numeric categorical columns
-    def mark_as_categorical(self, categorical_columns):
-        for name in categorical_columns:
-            self.mondrian.df[name] = self.mondrian.df[name].astype("category")
-
-    @staticmethod
-    def set_non_numerical_as_categorical(df):
-        for col in df.columns:
-            if not is_numeric_dtype(df[col]):
-                df[col] = df[col].astype("category")
-
+    def anonymize_t_closeness(self, df, k, t) -> DataFrame:
+        return self.anonymize(df, k, t=t)
 
     @staticmethod
     def __agg_categorical_column(series):
@@ -79,15 +72,15 @@ class DataFrameAnonymizer:
             string = f"{minimum}-{maximum}"
         return [string]
 
-    def partition_dataframe(self, k, l=0, t=0.0):
-        partitions = self.mondrian.partition(k, l, t)
+    def partition_dataframe(self, df, k, l=0, t=0.0) -> List[NumericIndex]:
+        mondrian = MondrianAnonymizer(df, self.feature_columns, self.sensitive_attribute_columns)
+        partitions = mondrian.partition(k, l, t)
         return partitions
 
-    def build_anonymized_dataframe(self, partitions) -> DataFrame:
+    def build_anonymized_dataframe(self, df, partitions) -> DataFrame:
         aggregations = {}
-        sensitive_columns = self.mondrian.sensitive_columns
-        feature_columns = self.mondrian.feature_columns
-        df = self.mondrian.df
+        sensitive_columns = self.sensitive_attribute_columns
+        feature_columns = self.feature_columns
         avg_columns = self.avg_columns
 
         sa_len = len(sensitive_columns)
