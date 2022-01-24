@@ -24,7 +24,7 @@ def main():
     k = 5
 
     # Init DataFrameAnonymizer with dataframe and sensitive column
-    p = DataFrameAnonymizer(sensitive_columns)
+    p = DataFrameAnonymizer(sensitive_columns, feature_columns=['age', 'salary'])
 
     # Perform partiotioning and anonymization separately
     print("\nPartition dataframe with mondrian algorithm. Sensitive columns: ", sensitive_columns, ", k=", k)

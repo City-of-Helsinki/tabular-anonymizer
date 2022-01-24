@@ -18,19 +18,8 @@ class DataFrameAnonymizer:
         self.avg_columns = avg_columns
         self.format_to_str = format_to_str
 
-    def anonymize(self, df, k, l=0, t=0.0):
-
-        # Check inputs
-        if df is None or len(df) == 0:
-            raise Exception("Dataframe is empty")
-        if self.sensitive_attribute_columns is None or len(self.sensitive_attribute_columns) == 0:
-            raise Exception("Provide at least one sensitive attribute column")
-
-        if self.avg_columns:
-            for c in self.avg_columns:
-                if not is_numeric_dtype(df[c]):
-                    raise Exception("Column " + c + " is not numeric and average cannot be calculated.")
-
+    # Set feature colums from all other columns than sensitive columns
+    def init_feature_colums(self, df):
         # Setup feature columns / Quasi identifiers
         fc = []
         if self.feature_columns is None:
@@ -39,6 +28,24 @@ class DataFrameAnonymizer:
                 if col not in self.sensitive_attribute_columns:
                     fc.append(col)
             self.feature_columns = fc
+
+    def anonymize(self, df, k, l=0, t=0.0):
+
+        # Check inputs
+        if df is None or len(df) == 0:
+            raise Exception("Dataframe is empty")
+        if self.sensitive_attribute_columns is None or len(self.sensitive_attribute_columns) == 0:
+            raise Exception("Provide at least one sensitive attribute column")
+
+        if not self.feature_columns:
+            self.init_feature_colums(df)
+
+        if self.avg_columns:
+            for c in self.avg_columns:
+                if not is_numeric_dtype(df[c]):
+                    raise Exception("Column " + c + " is not numeric and average cannot be calculated.")
+
+
 
         mondrian = MondrianAnonymizer(df, self.feature_columns, self.sensitive_attribute_columns)
         partitions = mondrian.partition(k, l, t)
