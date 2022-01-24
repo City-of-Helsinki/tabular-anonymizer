@@ -7,7 +7,7 @@ import pandas as pd
 from pandas import DataFrame
 
 
-def encrypt(x, n1, n2):
+def __encrypt(x, n1, n2):
     s = n1 + str(x) + n2
     hash = hashlib.sha3_224(s.encode()).hexdigest()
     return hash
@@ -30,7 +30,7 @@ def pseudonymize(df: DataFrame, column: str, nonce1=None, nonce2=None, generate_
         else:
             nonce2 = create_nonce()
 
-    s = df[column].apply(lambda row: encrypt(row, nonce1, nonce2))
+    s = df[column].apply(lambda row: __encrypt(row, nonce1, nonce2))
     df[column] = s
     df[column] = df[column].astype("category")
 
