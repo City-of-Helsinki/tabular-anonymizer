@@ -37,12 +37,12 @@ class MondrianAnonymizer:
 
     def is_valid(self, partition: Int64Index, k: int = _DEFAULT_K, l: int = 0, t: float = 0.0) -> bool:
         # k-anonymous
-        if not anonymity.is_k_anonymous(partition, k):
+        if not self.is_k_anonymous(partition, k):
             return False
         # l-diverse
         if l > 0 and self.sensitive_columns is not None:
             for sensitive_column in self.sensitive_columns:
-                diverse = anonymity.is_l_diverse(
+                diverse = self.is_l_diverse(
                     self.df, partition, sensitive_column, l
                 )
                 if not diverse:
@@ -50,24 +50,24 @@ class MondrianAnonymizer:
         # t-close
         if t > 0.0 and self.sensitive_columns is not None:
             for sensitive_column in self.sensitive_columns:
-                global_freqs = anonymity.get_global_freq(self.df, sensitive_column)
-                close = anonymity.is_t_close(
+                global_freqs = self.get_global_freq(self.df, sensitive_column)
+                close = self.is_t_close(
                     self.df, partition, sensitive_column, global_freqs, t
                 )
                 if not close:
                     return False
         return True
 
-    def is_k_anonymous(partition, k):
+    def is_k_anonymous(self, partition, k):
         if len(partition) < k:
             return False
         return True
 
-    def is_l_diverse(df, partition, sensitive_column, l):
+    def is_l_diverse(self, df, partition, sensitive_column, l):
         diversity = len(df.loc[partition][sensitive_column].unique())
         return diversity >= l
 
-    def is_t_close(df, partition, sensitive_column, global_freqs, p):
+    def is_t_close(self, df, partition, sensitive_column, global_freqs, t):
         total_count = float(len(partition))
         d_max = None
         group_counts = (
@@ -78,7 +78,17 @@ class MondrianAnonymizer:
             d = abs(p - global_freqs[value])
             if d_max is None or d > d_max:
                 d_max = d
-        return d_max <= p
+        return d_max <= t
+    
+    def get_global_freq(self, df, sensitive_column):
+        global_freqs = {}
+        total_count = float(len(df))
+        group_counts = df.groupby(sensitive_column)[sensitive_column].agg("count")
+
+        for value, count in group_counts.to_dict().items():
+            p = count / total_count
+            global_freqs[value] = p
+        return global_freqs
 
     def get_spans(self, partition: Int64Index, scale: dict = None) -> dict:
         spans = {}
