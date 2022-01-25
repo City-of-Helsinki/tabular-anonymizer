@@ -74,22 +74,6 @@ You can test this in practice with: examples/plot_partitions.py
     df_anonymized = p.anonymize_l_diversity(df, k=10, l=2)
 
 
-#### Example: T-closeness with K-Anonymity using DataFrameAnonymizer
-
-    import pandas as pd
-    from tabular_anonymizer import DataFrameAnonymizer
-
-    # Setup dataframe
-    df = pd.read_csv("./adult.csv", sep=",")
-    
-    # Define sensitive attributes
-    sensitive_columns = ['label']
-
-    # Anonymize dataframe with k=10
-    p = MondrianAnonymizer(sensitive_columns)
-    df_anonymized = p.anonymize_t_closeness(df, k=10, t=1.0)
-
-
 ### Pseudonymization
 
 Pseudonymization tool is intended for combining data from multiple sources. Both datasets should have common column that
@@ -182,6 +166,6 @@ Hit ctrl + c to quit container.
 
 ## Acknowledgements
 
-This library uses parts of [glassonion1/AnonyPy](https://github.com/glassonion1/anonypy) mondrian implementation with enhancements. 
+Mondrian algorithm of this library is based on [glassonion1/AnonyPy](https://github.com/glassonion1/anonypy) mondrian implementation. 
 
 Visualization example (plot_partitions.py) is based on Nuclearstar/K-Anonymity plot implementation. [Nuclearstar/K-Anonymity](https://github.com/Nuclearstar/K-Anonymity)

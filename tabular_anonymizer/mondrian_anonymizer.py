@@ -1,11 +1,11 @@
 from typing import List
 from pandas.api.types import is_numeric_dtype
-from anonypy import anonymity
 from pandas import Int64Index, DataFrame
 
 """
 Modified and optimized version of anonypy Mondrian that supports multiple sensitive attributes. 
 """
+
 
 class MondrianAnonymizer:
     feature_columns: List[str] = []     # Quasi-identifiers. Data will be grouped using these columns.
@@ -18,7 +18,7 @@ class MondrianAnonymizer:
 
     def __init__(self, df: DataFrame, feature_columns: List[str], sensitive_columns: List[str]) -> None:
         # prepare dataframe for partitioning
-        self.df =  self.prepare_dataframe(df)
+        self.df = self.prepare_dataframe(df)
         if not feature_columns:
             raise Exception("Feature columns is mandatory parameter")
         self.sensitive_columns = sensitive_columns
@@ -28,57 +28,35 @@ class MondrianAnonymizer:
     def prepare_dataframe(self, df_orig: DataFrame):
         df = df_orig.__deepcopy__()
 
-        # Set non-numerical coluns to category
+        # Set non-numerical columns to category
         for col in df.columns:
             if not is_numeric_dtype(df[col]):
                 df[col] = df[col].astype("category")
 
         return df
 
-    def is_valid(self, partition: Int64Index, k: int = _DEFAULT_K, l: int = 0, t: float = 0.0) -> bool:
+    def is_valid(self, partition: Int64Index, k: int = _DEFAULT_K, l: int = 0) -> bool:
         # k-anonymous
-        if not anonymity.is_k_anonymous(partition, k):
+        if not self.is_k_anonymous(partition, k):
             return False
         # l-diverse
         if l > 0 and self.sensitive_columns is not None:
             for sensitive_column in self.sensitive_columns:
-                diverse = anonymity.is_l_diverse(
+                diverse = self.is_l_diverse(
                     self.df, partition, sensitive_column, l
                 )
                 if not diverse:
                     return False
-        # t-close
-        if t > 0.0 and self.sensitive_columns is not None:
-            for sensitive_column in self.sensitive_columns:
-                global_freqs = anonymity.get_global_freq(self.df, sensitive_column)
-                close = anonymity.is_t_close(
-                    self.df, partition, sensitive_column, global_freqs, t
-                )
-                if not close:
-                    return False
         return True
 
-    def is_k_anonymous(partition, k):
+    def is_k_anonymous(self, partition, k):
         if len(partition) < k:
             return False
         return True
 
-    def is_l_diverse(df, partition, sensitive_column, l):
+    def is_l_diverse(self, df, partition, sensitive_column, l):
         diversity = len(df.loc[partition][sensitive_column].unique())
         return diversity >= l
-
-    def is_t_close(df, partition, sensitive_column, global_freqs, p):
-        total_count = float(len(partition))
-        d_max = None
-        group_counts = (
-            df.loc[partition].groupby(sensitive_column)[sensitive_column].agg("count")
-        )
-        for value, count in group_counts.to_dict().items():
-            p = count / total_count
-            d = abs(p - global_freqs[value])
-            if d_max is None or d > d_max:
-                d_max = d
-        return d_max <= p
 
     def get_spans(self, partition: Int64Index, scale: dict = None) -> dict:
         spans = {}
@@ -112,7 +90,7 @@ class MondrianAnonymizer:
             dfr = dfp.index[dfp >= median]
             return dfl, dfr
 
-    def partition(self, k: int = _DEFAULT_K, l: int = 0, t: float = 0.0) -> object:
+    def partition(self, k: int = _DEFAULT_K, l: int = 0) -> object:
         scale = self.get_spans(self.df.index)
         finished_partitions = []
         partitions = [self.df.index]
@@ -122,7 +100,7 @@ class MondrianAnonymizer:
             sorted_items = sorted(spans.items(), key=lambda x: -x[1])
             for column, span in sorted_items:
                 lp, rp = self.split(column, partition)
-                if not self.is_valid(lp, k, l, t) or not self.is_valid(rp, k, l, t):
+                if not self.is_valid(lp, k, l) or not self.is_valid(rp, k, l):
                     continue
                 partitions.extend((lp, rp))
                 break

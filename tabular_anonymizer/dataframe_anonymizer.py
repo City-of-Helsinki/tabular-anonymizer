@@ -29,7 +29,7 @@ class DataFrameAnonymizer:
                     fc.append(col)
             self.feature_columns = fc
 
-    def anonymize(self, df, k, l=0, t=0.0):
+    def anonymize(self, df, k, l=0):
 
         # Check inputs
         if df is None or len(df) == 0:
@@ -45,10 +45,8 @@ class DataFrameAnonymizer:
                 if not is_numeric_dtype(df[c]):
                     raise Exception("Column " + c + " is not numeric and average cannot be calculated.")
 
-
-
         mondrian = MondrianAnonymizer(df, self.feature_columns, self.sensitive_attribute_columns)
-        partitions = mondrian.partition(k, l, t)
+        partitions = mondrian.partition(k, l)
         dfa = self.build_anonymized_dataframe(df, partitions)
         return dfa
 
@@ -58,8 +56,8 @@ class DataFrameAnonymizer:
     def anonymize_l_diversity(self, df, k, l) -> DataFrame:
         return self.anonymize(df, k, l=l)
 
-    def anonymize_t_closeness(self, df, k, t) -> DataFrame:
-        return self.anonymize(df, k, t=t)
+    def anonymize_t_closeness(self, df, k) -> DataFrame:
+        return self.anonymize(df, k)
 
     @staticmethod
     def __agg_column_str(series):
@@ -83,9 +81,9 @@ class DataFrameAnonymizer:
             l = [str(n) for n in set(series)]
             return l
 
-    def partition_dataframe(self, df, k, l=0, t=0.0) -> List[NumericIndex]:
+    def partition_dataframe(self, df, k, l=0) -> List[NumericIndex]:
         mondrian = MondrianAnonymizer(df, self.feature_columns, self.sensitive_attribute_columns)
-        partitions = mondrian.partition(k, l, t)
+        partitions = mondrian.partition(k, l)
         return partitions
 
     def build_anonymized_dataframe(self, df, partitions) -> DataFrame:
