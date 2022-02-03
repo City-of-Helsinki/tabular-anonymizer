@@ -1,6 +1,5 @@
 import hashlib
-import string
-import random
+import secrets
 from typing import List
 
 import pandas as pd
@@ -36,8 +35,7 @@ def pseudonymize(df: DataFrame, column: str, nonce1=None, nonce2=None, generate_
 
 
 def create_nonce(size=10):
-    nonce = ''.join(random.choice(string.hexdigits) for i in range(size))
-    return nonce
+    return secrets.token_hex(size)
 
 
 def combine_and_pseudonymize(df1: DataFrame, df2: DataFrame, column: str, nonce1=None, nonce2=None):
