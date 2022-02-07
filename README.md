@@ -7,14 +7,28 @@ This library provides tools and methods for anonymization and privacy protection
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) for installation.
+### Using pip-tools
+
+To install this package using [pip-tools](https://pypi.org/project/pip-tools/1.8.0/):
+
+Add `-e https://github.com/Datahel/tabular-anonymizer.git#egg=tabular_anonymizer` to your `requirements.in`
+
+Run:
+        $ pip-compile --generate-hashes --allow-unsafe -o requirements.txt requirements.in
+        $ pip-sync requirements.in
+
+### Using pip
+
+To install this package using [pip](https://pip.pypa.io/en/stable/):
+
+Run:
 
         $ pip install git+https://github.com/Datahel/tabular-anonymizer.git
 
-You can also clone this repository and install library from local folder with pip using -e flag:
+You can alternatively clone this repository and install library from local folder with pip using -e flag:
 
-    $ git clone https://github.com/Datahel/tabular-anonymizer.git
-    $ pip install -e tabular-anonymizer
+        $ git clone https://github.com/Datahel/tabular-anonymizer.git
+        $ pip install -e tabular-anonymizer
 
 
 ## Usage
