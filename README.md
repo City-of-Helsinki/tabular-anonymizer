@@ -89,9 +89,7 @@ You can test this in practice with: examples/plot_partitions.py
 
 ### Pseudonymization
 
-Pseudonymization tool is intended for combining data from multiple sources. Both datasets should have common column that
-is sensitive information. Combine_and_pseudonymize function 
-The user can pseudonymize a direct identifier with a hash function.
+Pseudonymization tool is intended for combining data from multiple sources. Both datasets share an identifier column. The function `combine_and_pseudonymize` replaces the identifier with a hash.
 
 ![Dataframe before pseudonymization](documents/pseudonymization_before.png?raw=true "Dataframe")
 
