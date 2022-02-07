@@ -9,7 +9,7 @@ This library provides tools and methods for anonymization and privacy protection
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) for installation.
 
-        $ pip install https://github.com/Datahel/tabular-anonymizer.git
+        $ pip install git+https://github.com/Datahel/tabular-anonymizer.git
 
 You can also clone this repository and install library from local folder with pip using -e flag:
 
