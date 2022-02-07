@@ -3,28 +3,44 @@
 Anonymization and pseudonymization tools for tabular data. 
 
 
-This library provides tools and methods for anonymizing tabular data and privacy protection.
-This library offers utils and methods for
-protecting privacy and anonymization of tabular data. 
+This library provides tools and methods for anonymization and privacy protection of data in Pandas DataFrame format.
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) for installation.
+### Using pip-tools
 
-        $ pip install https://github.com/Datahel/tabular-anonymizer.git
+To install this package using [pip-tools](https://pypi.org/project/pip-tools/1.8.0/):
 
-You can also clone this repository and install library from local folder with pip using -e flag:
+Add `-e https://github.com/Datahel/tabular-anonymizer.git#egg=tabular_anonymizer` to your `requirements.in`
 
-    $ git clone https://github.com/Datahel/tabular-anonymizer.git
-    $ pip install -e tabular-anonymizer
+Run:
 
+        $ pip-compile --generate-hashes --allow-unsafe -o requirements.txt requirements.in
+        $ pip-sync requirements.txt
+
+### Using pip
+
+To install this package using [pip](https://pip.pypa.io/en/stable/):
+
+Run:
+
+        $ pip install git+https://github.com/Datahel/tabular-anonymizer.git
+        
+### Git clone + pip (if you want to inspect the examples)
+
+You can alternatively clone this repository and install library from local folder with pip using -e flag:
+
+        $ git clone https://github.com/Datahel/tabular-anonymizer.git
+        $ pip install -e tabular-anonymizer
+
+You can then try out the examples found under `examples/` folder. 
 
 ## Usage
 
 ### Anonymization
 
 DataFrameAnonymizer anonymization functionality supports K-anonymity alone or together with L-diversity or T-closeness 
-using Mondrian algorithm. Utils and methods are for [Pandas DataFrames](https://pandas.pydata.org). 
+using Mondrian algorithm.
 
 #### K-Anonymity in practice
 
@@ -76,9 +92,7 @@ You can test this in practice with: examples/plot_partitions.py
 
 ### Pseudonymization
 
-Pseudonymization tool is intended for combining data from multiple sources. Both datasets should have common column that
-is sensitive information. Combine_and_pseudonymize function 
-The user can pseudonymize a direct identifier with a hash function.
+Pseudonymization tool is intended for combining data from multiple sources. Both datasets share an identifier column. The function `combine_and_pseudonymize` replaces the identifier with a hash.
 
 ![Dataframe before pseudonymization](documents/pseudonymization_before.png?raw=true "Dataframe")
 
