@@ -14,6 +14,7 @@ To install this package using [pip-tools](https://pypi.org/project/pip-tools/1.8
 Add `-e https://github.com/Datahel/tabular-anonymizer.git#egg=tabular_anonymizer` to your `requirements.in`
 
 Run:
+
         $ pip-compile --generate-hashes --allow-unsafe -o requirements.txt requirements.in
         $ pip-sync requirements.in
 
