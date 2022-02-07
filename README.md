@@ -25,12 +25,15 @@ To install this package using [pip](https://pip.pypa.io/en/stable/):
 Run:
 
         $ pip install git+https://github.com/Datahel/tabular-anonymizer.git
+        
+### Git clone + pip (if you want to inspect the examples)
 
 You can alternatively clone this repository and install library from local folder with pip using -e flag:
 
         $ git clone https://github.com/Datahel/tabular-anonymizer.git
         $ pip install -e tabular-anonymizer
 
+You can then try out the examples found under `examples/` folder. 
 
 ## Usage
 
