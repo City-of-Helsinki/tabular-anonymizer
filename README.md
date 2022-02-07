@@ -4,8 +4,6 @@ Anonymization and pseudonymization tools for tabular data.
 
 
 This library provides tools and methods for anonymizing tabular data and privacy protection.
-This library offers utils and methods for
-protecting privacy and anonymization of tabular data. 
 
 ## Installation
 
