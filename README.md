@@ -3,7 +3,7 @@
 Anonymization and pseudonymization tools for tabular data. 
 
 
-This library provides tools and methods for anonymizing tabular data and privacy protection.
+This library provides tools and methods for anonymization and privacy protection of data in Pandas DataFrame format.
 
 ## Installation
 
@@ -22,7 +22,7 @@ You can also clone this repository and install library from local folder with pi
 ### Anonymization
 
 DataFrameAnonymizer anonymization functionality supports K-anonymity alone or together with L-diversity or T-closeness 
-using Mondrian algorithm. Utils and methods are for [Pandas DataFrames](https://pandas.pydata.org). 
+using Mondrian algorithm.
 
 #### K-Anonymity in practice
 
