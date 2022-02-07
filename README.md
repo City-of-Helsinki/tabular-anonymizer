@@ -16,7 +16,7 @@ Add `-e https://github.com/Datahel/tabular-anonymizer.git#egg=tabular_anonymizer
 Run:
 
         $ pip-compile --generate-hashes --allow-unsafe -o requirements.txt requirements.in
-        $ pip-sync requirements.in
+        $ pip-sync requirements.txt
 
 ### Using pip
 
