@@ -153,21 +153,30 @@ Pseudonymization tool is intended for combining data from multiple sources. Both
     #                               zip
     #                               '202**'
 
-#### More examples
+### Example jupyter notebooks
 
-    More examples can be found in examples-folder.
+Besides example scripts, there are Jupyter notebooks can be found in examples-folder for testing purposes. 
 
-#### Run examples in GitHub Codespaces
+    examples/sample_notebook.ipynb # Example how to use tabular anonymizer
+    examples/check_anonymity.ipynb # Example for validating anonymizer results
 
-Launch new codespace and test example scripts in examples-folder directly in VSCode desktop or web interface.
+#### Run notebooks in GitHub Codespaces
 
-Tip: If you want to run jupyter-lab server in codespaces, use following command:
+If you use GitHub codespaces, you can execute example scripts directly in VSCode browser interface. Required plugins are included in codespaces container configuration. 
+
+#### Running Jupyter lab as server in codespaces
+
+Codespaces allows you to run notebooks directly in we interface. However, if you need to run jupyter-lab server in codespaces, follow these instructions.
+
+1. Start jupyter-lab server in codespaces terminal using following command :
 
         jupyter-lab --ip 0.0.0.0 --config .devcontainer/jupyter-server-config.py --no-browser
 
-Then add port-mapping to port 8888.
+2. Observe jupyter-lab server log and click link pointing to 127.0.0.1, eg: http://127.0.0.1:8888/lab?token=... A small popup with link titled "Follow link using forwarded port" appears. Click the link and codespaces will redirect you to Jupyterlab user interface.  
 
-#### Run examples in local docker environment
+![Jupyter_server_codespaces](documents/jupyterlab_codespaces.png?raw=true "JupyterLab in codespaces")
+
+#### Run examples and jupyterlab in local docker environment
 
 You can run Jupyterlab and do experiments with tabular anonymizer in docker container:
 
