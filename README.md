@@ -71,7 +71,7 @@ You can test this in practice with: examples/plot_partitions.py
     sensitive_columns = ['label']
 
     # Anonymize dataframe with k=10
-    p = MondrianAnonymizer(sensitive_columns)
+    p = DataFrameAnonymizer(sensitive_columns)
     df_anonymized = p.anonymize_k_anonymity(df, k=10)
 
 #### Example: K-Anonymity with L-diversity using DataFrameAnonymizer
@@ -86,7 +86,7 @@ You can test this in practice with: examples/plot_partitions.py
     sensitive_columns = ['label']
 
     # Anonymize dataframe with k=10
-    p = MondrianAnonymizer(sensitive_columns)
+    p = DataFrameAnonymizer(sensitive_columns)
     df_anonymized = p.anonymize_l_diversity(df, k=10, l=2)
 
 
@@ -105,7 +105,7 @@ Pseudonymization tool is intended for combining data from multiple sources. Both
 #### Example: Pseudonymization of dataframe column with generated secret key
 
     from tabular_anonymizer import utils
-    file1 = "exampples/adult.csv"
+    file1 = "examples/adult.csv"
     df = pd.read_csv(file1, sep=",", index_col=0)
     # Simple way
     utils.pseudonymize(df, 'column_name', generate_nonce=True)
