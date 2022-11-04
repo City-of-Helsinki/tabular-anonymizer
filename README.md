@@ -71,7 +71,7 @@ You can test this in practice with: examples/plot_partitions.py
     sensitive_columns = ['label']
 
     # Anonymize dataframe with k=10
-    p = MondrianAnonymizer(sensitive_columns)
+    p = DataFrameAnonymizer(sensitive_columns)
     df_anonymized = p.anonymize_k_anonymity(df, k=10)
 
 #### Example: K-Anonymity with L-diversity using DataFrameAnonymizer
@@ -86,7 +86,7 @@ You can test this in practice with: examples/plot_partitions.py
     sensitive_columns = ['label']
 
     # Anonymize dataframe with k=10
-    p = MondrianAnonymizer(sensitive_columns)
+    p = DataFrameAnonymizer(sensitive_columns)
     df_anonymized = p.anonymize_l_diversity(df, k=10, l=2)
 
 
